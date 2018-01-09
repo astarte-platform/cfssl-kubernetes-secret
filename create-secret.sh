@@ -9,7 +9,8 @@ if ! kubectl get pods > /dev/null; then
 fi
 
 echo "Getting CFSSL Certificate..."
-if ! curl -s -d '{"label": "primary"}' -X POST $CFSSL_URL/api/v1/cfssl/info | jq -e -r ".result.certificate" > /tmp/ca.crt; then
+curl -s -d '{"label": "primary"}' -X POST $CFSSL_URL/api/v1/cfssl/info | jq -e -r ".result.certificate" > /tmp/ca.crt
+if [ ! -s /tmp/ca.crt ] ; then
     echo "Could not retrieve certificate from CFSSL at $CFSSL_URL. This error might be temporary, the job will retry in a while."
     exit 10
 fi
